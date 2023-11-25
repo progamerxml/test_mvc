@@ -1,0 +1,34 @@
+{
+  "name": "progammer_anyaran/test_mvc",
+  "description": "Test MVC by : Progammer Anyaran.",
+  "type": "project",
+  "authors": [
+    {
+      "name": "Progammer Anyaran",
+      "email": "imachmud97@gmail.com"
+    }
+  ],
+  "require": {
+    "php": ">=8",
+    "twbs/bootstrap": "v5.3.2"
+  },
+  "require-dev": {
+    "phpunit/phpunit": "10.3.5"
+  },
+  "autoload": {
+    "psr-4": {
+      "PRGANYAR\\MVC\\TEST\\": "app"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "PRGANYAR\\MVC\\TEST\\": "tests"
+    }
+  },
+  "scripts": {
+    "post-update-cmd": [
+      "rm -rf public/bootstrap",
+      "cp -R vendor/twbs/bootstrap/dist public/bootstrap"
+    ]
+  }
+}
