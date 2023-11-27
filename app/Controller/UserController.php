@@ -8,6 +8,7 @@ use Exception;
 use PRGANYAR\MVC\TEST\App\View;
 use PRGANYAR\MVC\TEST\Config\Database;
 use PRGANYAR\MVC\TEST\Exception\ValidationException;
+use PRGANYAR\MVC\TEST\Model\UserLoginRequest;
 use PRGANYAR\MVC\TEST\Model\UserRegisterRequest;
 use PRGANYAR\MVC\TEST\Repository\UserRepository;
 use PRGANYAR\MVC\TEST\Service\UserService;
@@ -46,6 +47,32 @@ class UserController
                 'title' => 'Register',
                 'heading' => 'Register User Baru',
                 'error' => $err->getMessage()
+            ]);
+        }
+    }
+
+    public function login()
+    {
+        View::view('User/login', [
+            "title" => "Login",
+            "heading" => "Login User"
+        ]);
+    }
+
+    public function postLogin()
+    {
+        $request = new UserLoginRequest();
+        $request->id = $_POST['id'];
+        $request->password = $_POST['password'];
+
+        try{
+            $this->userService->login($request);
+            View::redirect('/');
+        }catch(ValidationException $err){
+            View::view('User/login', [
+                "title" => "Login",
+                "heading" => "Login User",
+                "error" => $err->getMessage()
             ]);
         }
     }

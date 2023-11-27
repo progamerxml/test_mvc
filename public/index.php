@@ -14,5 +14,7 @@ Route::add("GET", "/error/404", HomeController::class, "error", []);
 
 Route::add("GET", "/users/register", UserController::class, "register", []);
 Route::add("POST", "/users/register", UserController::class, "postRegister", []);
+Route::add("GET", "/users/login", UserController::class, "login", []);
+Route::add("POST", "/users/login", UserController::class, "postLogin", []);
 
 Route::gas();
