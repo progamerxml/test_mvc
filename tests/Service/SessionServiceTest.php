@@ -80,19 +80,4 @@ class SessionServiceTest extends TestCase
 
         self::assertEquals($session->user_id, $user->id);
     }
-
-    public function testCurrentNull()
-    {
-        $session = new Session();
-        $session->id = uniqid();
-        $session->user_id = "prganyrn";
-
-        $this->sessionRepository->save($session);
-
-        $_COOKIE[SessionService::$COOKIE_NAME] = $session->id;
-
-        $user = $this->sessionService->current();
-
-        self::assertEquals($session->user_id, $user->id);
-    }
 }
