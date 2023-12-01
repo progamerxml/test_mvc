@@ -11,17 +11,23 @@ use PRGANYAR\MVC\TEST\Exception\ValidationException;
 use PRGANYAR\MVC\TEST\Model\UserLoginRequest;
 use PRGANYAR\MVC\TEST\Model\UserRegisterRequest;
 use PRGANYAR\MVC\TEST\Repository\UserRepository;
+use PRGANYAR\MVC\TEST\Repository\SessionRepository;
+use PRGANYAR\MVC\TEST\Service\SessionService;
 use PRGANYAR\MVC\TEST\Service\UserService;
 
 class UserController
 {
     private UserService $userService;
+    private SessionService $sessionService;
 
     public function __construct()
     {
         $connection = Database::getConnection();
         $userRepository = new UserRepository($connection);
         $this->userService = new UserService($userRepository);
+
+        $sessionRepository = new SessionRepository($connection);
+        $this->sessionService = new SessionService($sessionRepository, $userRepository);
     }
 
     public function register()
@@ -66,7 +72,8 @@ class UserController
         $request->password = $_POST['password'];
 
         try{
-            $this->userService->login($request);
+            $response = $this->userService->login($request);
+            $this->sessionService->create($response->user->id);
             View::redirect('/');
         }catch(ValidationException $err){
             View::view('User/login', [
