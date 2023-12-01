@@ -10,7 +10,7 @@ use PRGANYAR\MVC\TEST\Repository\SessionRepository;
 use PRGANYAR\MVC\TEST\Repository\UserRepository;
 use PRGANYAR\MVC\TEST\Service\SessionService;
 
-class HomeController extends TestCase
+class HomeControllerTest extends TestCase
 {
     private HomeController $homeController;
     private SessionRepository $sessionRepository;
