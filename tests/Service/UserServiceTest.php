@@ -9,6 +9,7 @@ use PRGANYAR\MVC\TEST\Config\Database;
 use PRGANYAR\MVC\TEST\Domain\User;
 use PRGANYAR\MVC\TEST\Exception\ValidationException;
 use PRGANYAR\MVC\TEST\Model\UserLoginRequest;
+use PRGANYAR\MVC\TEST\Model\UserProfileUpdateRequest;
 use PRGANYAR\MVC\TEST\Model\UserRegisterRequest;
 use PRGANYAR\MVC\TEST\Service\UserService;
 use PRGANYAR\MVC\TEST\Repository\UserRepository;
@@ -119,5 +120,26 @@ class UserServiceTest extends TestCase
 
         self::assertEquals($user->id, $response->user->id);
         self::assertTrue(password_verify($request->password, $response->user->password));
+    }
+
+    public function testUpdateProfileSuccess()
+    {
+        $user = new User();
+        $user->id = "test1";
+        $user->name = "Test Name 1";
+        $user->password = password_hash("rahasia1", PASSWORD_BCRYPT);
+
+        $this->userRepository->save($user);
+
+        $request = new UserProfileUpdateRequest();
+        $request -> id = "test1";
+        $request -> name = "Test Name 0";
+
+        $response = $this->userService->updateProfile($request);
+
+        $result = $this->userRepository->findById($response->user->id);
+
+        self::assertEquals($user->id, $result->id);
+        
     }
 }

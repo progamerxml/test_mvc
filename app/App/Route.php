@@ -28,9 +28,16 @@ class Route
 
         foreach(self::$routes as $route)
         {
+
             $pattern = "#^" . $route['url'] . "$#";
             if(preg_match($pattern, $url, $variables) && $route['method'] == $method)
             {
+                foreach($route['middleware'] as $middleware)
+                {
+                    $instance = new $middleware;
+                    $instance->cek();
+                }
+
                 $function = $route['function'];
                 $controller = new $route['controller'];
 

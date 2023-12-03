@@ -7,11 +7,13 @@ namespace PRGANYAR\MVC\TEST\Service;
 use PRGANYAR\MVC\TEST\Config\Database;
 use PRGANYAR\MVC\TEST\Domain\User;
 use PRGANYAR\MVC\TEST\Exception\ValidationException;
+use PRGANYAR\MVC\TEST\Model\UserProfileUpdateResponse;
 use PRGANYAR\MVC\TEST\Model\UserRegisterRequest;
 use PRGANYAR\MVC\TEST\Model\UserRegisterResponse;
 use PRGANYAR\MVC\TEST\Repository\UserRepository;
 use PRGANYAR\MVC\TEST\Model\UserLoginRequest;
 use PRGANYAR\MVC\TEST\Model\UserLoginResponse;
+use PRGANYAR\MVC\TEST\Model\UserProfileUpdateRequest;
 
 class UserService
 {
@@ -87,6 +89,45 @@ class UserService
     {
         if($request->id == null || $request->password == null ||
         trim($request->id) == '' || trim($request->password) == '')
+        {
+            throw new ValidationException("Id, dan Password ra olih kosong !");
+        }
+    }
+
+    public function updateProfile(UserProfileUpdateRequest $request): UserProfileUpdateResponse
+    {
+        $this->userProfileUpdateValidation($request);
+
+        try{
+
+            Database::start();
+
+            $user = $this->userRepository->findById($request->id);
+            if($user == null){
+                throw new ValidationException("User ra ketemu !");
+            }
+
+            $user->name = $request->name;
+            $this->userRepository->save($user);
+
+            Database::commit();
+
+            $response = new UserProfileUpdateResponse();
+            $response->user = $user;
+            
+            return $response;
+
+        }catch(\Exception $err) {
+            Database::rollback();
+            throw $err;
+        }
+        
+    }
+
+    private function userProfileUpdateValidation(UserProfileUpdateRequest $request)
+    {
+        if($request->id == null || $request->name == null ||
+        trim($request->id) == '' || trim($request->name) == '')
         {
             throw new ValidationException("Id, dan Password ra olih kosong !");
         }
