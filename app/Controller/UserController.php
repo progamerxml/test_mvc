@@ -9,6 +9,7 @@ use PRGANYAR\MVC\TEST\App\View;
 use PRGANYAR\MVC\TEST\Config\Database;
 use PRGANYAR\MVC\TEST\Exception\ValidationException;
 use PRGANYAR\MVC\TEST\Model\UserLoginRequest;
+use PRGANYAR\MVC\TEST\Model\UserProfileUpdateRequest;
 use PRGANYAR\MVC\TEST\Model\UserRegisterRequest;
 use PRGANYAR\MVC\TEST\Repository\UserRepository;
 use PRGANYAR\MVC\TEST\Repository\SessionRepository;
@@ -88,5 +89,41 @@ class UserController
     {
         $this->sessionService->destroy();
         View::redirect('/');
+    }
+
+    public function updateProfile()
+    {
+        $user = $this->sessionService->current();
+        View::view('User/profile', [
+            "title" => "Update Profile",
+            "user" => [
+                "id" => $user->id,
+                "name" => $user->name
+            ]
+        ]);
+    }
+
+    public function postUpdateProfile()
+    {
+        $user = $this->sessionService->current();
+        $request = new UserProfileUpdateRequest();
+
+        $request->id = $user->id;
+        $request->name = $_POST['name'];
+
+        try{
+            $this->userService->updateProfile($request);
+            View::redirect('/');
+        }catch(ValidationException $err){
+            View::view('User/profile', [
+                "title" => "Update Profile",
+                "error" => $err->getMessage(),
+                "user" => [
+                    "id" => $user->id,
+                    "name" => $_POST['name']
+                ]
+            ]);
+        }
+
     }
 }

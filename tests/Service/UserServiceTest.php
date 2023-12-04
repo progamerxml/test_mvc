@@ -142,4 +142,25 @@ class UserServiceTest extends TestCase
         self::assertEquals($user->id, $result->id);
         
     }
+
+    public function testUpdateProfileValidationError()
+    {
+        $this->expectException(ValidationException::class);
+        $request = new UserProfileUpdateRequest();
+        $request -> id = "";
+        $request -> name = "";
+
+        $this->userService->updateProfile($request);
+
+    }
+
+    public function testUpdateProfileNotFound()
+    {
+        $this->expectException(ValidationException::class);
+        $request = new UserProfileUpdateRequest();
+        $request -> id = "test";
+        $request -> name = "Testing 1";
+
+        $this->userService->updateProfile($request);
+    }
 }
