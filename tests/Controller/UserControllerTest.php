@@ -89,13 +89,13 @@ class UserControllerTest extends TestCase
         $_COOKIE[SessionService::$COOKIE_NAME] = $session->id;
 
         $_POST['name'] = "Test Name 1";
-        $this->userController->updateProfile();
+        $this->userController->postUpdateProfile();
 
-        self::expectOutputRegex('[Location: /]');
+        self::expectOutputRegex("[Location: /]");
 
-        $result = $this->userRepository->findById($user->id);
+        $result = $this->userRepository->findById('test01');
 
-        self::assertEquals("Test Name 1", $result->id);
+        self::assertEquals("Test Name 1", $result->name);
     }
 
     public function testUpdateProfileValidationException()
@@ -116,7 +116,7 @@ class UserControllerTest extends TestCase
         $_COOKIE[SessionService::$COOKIE_NAME] = $session->id;
 
         $_POST['name'] = "";
-        $this->userController->updateProfile();
+        $this->userController->postUpdateProfile();
 
         self::expectOutputRegex('[Profile]');
         self::expectOutputRegex('[Id]');
