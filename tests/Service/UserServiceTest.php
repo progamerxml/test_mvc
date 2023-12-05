@@ -11,17 +11,23 @@ use PRGANYAR\MVC\TEST\Exception\ValidationException;
 use PRGANYAR\MVC\TEST\Model\UserLoginRequest;
 use PRGANYAR\MVC\TEST\Model\UserProfileUpdateRequest;
 use PRGANYAR\MVC\TEST\Model\UserRegisterRequest;
+use PRGANYAR\MVC\TEST\Repository\SessionRepository;
 use PRGANYAR\MVC\TEST\Service\UserService;
 use PRGANYAR\MVC\TEST\Repository\UserRepository;
 
 class UserServiceTest extends TestCase
 {
+    private SessionRepository $sessionRepository;
     private UserService $userService;
     private UserRepository $userRepository;
 
     protected function setUp(): void
     {
         $connection = Database::getConnection();
+
+        $this->sessionRepository = new SessionRepository($connection);
+        $this->sessionRepository->deleteAll();
+        
         $this->userRepository = new UserRepository($connection);
         $this->userService = new UserService($this->userRepository);
 
@@ -141,5 +147,15 @@ class UserServiceTest extends TestCase
 
         self::assertEquals($user->id, $result->id);
         
+    }
+
+    public function testUpdateProfileValError()
+    {
+        
+    }
+
+    public function testUpdateProfileNotFound()
+    {
+
     }
 }
