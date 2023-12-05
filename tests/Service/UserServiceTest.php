@@ -27,7 +27,7 @@ class UserServiceTest extends TestCase
 
         $this->sessionRepository = new SessionRepository($connection);
         $this->sessionRepository->deleteAll();
-        
+
         $this->userRepository = new UserRepository($connection);
         $this->userService = new UserService($this->userRepository);
 
@@ -150,12 +150,27 @@ class UserServiceTest extends TestCase
     }
 
     public function testUpdateProfileValError()
-    {
+    {}
         
+    public function testUpdateProfileValidationError()
+    {
+        $this->expectException(ValidationException::class);
+        $request = new UserProfileUpdateRequest();
+        $request -> id = "";
+        $request -> name = "";
+
+        $this->userService->updateProfile($request);
+
     }
 
     public function testUpdateProfileNotFound()
     {
 
+        $this->expectException(ValidationException::class);
+        $request = new UserProfileUpdateRequest();
+        $request -> id = "test";
+        $request -> name = "Testing 1";
+
+        $this->userService->updateProfile($request);
     }
 }

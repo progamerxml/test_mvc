@@ -7,12 +7,14 @@ namespace PRGANYAR\MVC\TEST\Service;
 use PRGANYAR\MVC\TEST\Config\Database;
 use PRGANYAR\MVC\TEST\Domain\User;
 use PRGANYAR\MVC\TEST\Exception\ValidationException;
+use PRGANYAR\MVC\TEST\Model\UserPasswordUpdateResponse;
 use PRGANYAR\MVC\TEST\Model\UserProfileUpdateResponse;
 use PRGANYAR\MVC\TEST\Model\UserRegisterRequest;
 use PRGANYAR\MVC\TEST\Model\UserRegisterResponse;
 use PRGANYAR\MVC\TEST\Repository\UserRepository;
 use PRGANYAR\MVC\TEST\Model\UserLoginRequest;
 use PRGANYAR\MVC\TEST\Model\UserLoginResponse;
+use PRGANYAR\MVC\TEST\Model\UserPasswordUpdateRequest;
 use PRGANYAR\MVC\TEST\Model\UserProfileUpdateRequest;
 
 class UserService
@@ -108,7 +110,7 @@ class UserService
             }
 
             $user->name = $request->name;
-            $this->userRepository->save($user);
+            $this->userRepository->update($user);
 
             Database::commit();
 
@@ -130,6 +132,47 @@ class UserService
         trim($request->id) == '' || trim($request->name) == '')
         {
             throw new ValidationException("Id, dan Password ra olih kosong !");
+        }
+    }
+
+    public function updatePassword(UserPasswordUpdateRequest $request)
+    {
+        $this->validationUpdatePassword($request);
+
+        try{
+            Database::start();
+
+            $user = $this->userRepository->findById($request->id);
+            if($user == null){
+                throw new ValidationException("User ra ana !");
+            }
+
+            if(!password_verify($request->oldPassword, $user->password)){
+                throw new ValidationException("Old Password salah !");
+            }
+
+            $user->password = password_hash($request->newPassword, PASSWORD_BCRYPT);
+            $this->userRepository->update($user);
+
+            Database::commit();
+            
+            $response = new UserPasswordUpdateResponse();
+            $response->user = $user;
+
+            return $response;
+        }catch(\Exception $err){
+            Database::rollback();
+            throw $err;
+
+        }
+    }
+
+    private function validationUpdatePassword(UserPasswordUpdateRequest $request)
+    {
+        if($request->id == null || $request->oldPassword == null || $request->newPassword == null ||
+        trim($request->id) == '' ||trim($request->oldPassword) == '' || trim($request->newPassword) == '')
+        {
+            throw new ValidationException("Old Password, Dan New Password ra olih kosong !");
         }
     }
 }
