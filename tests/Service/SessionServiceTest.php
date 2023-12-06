@@ -2,6 +2,8 @@
 
 namespace PRGANYAR\MVC\TEST\Service;
 
+require_once __DIR__ ."/../Helper/helper.php";
+
 use PHPUnit\Framework\TestCase;
 use PRGANYAR\MVC\TEST\Config\Database;
 use PRGANYAR\MVC\TEST\Domain\Session;
@@ -9,10 +11,6 @@ use PRGANYAR\MVC\TEST\Domain\User;
 use PRGANYAR\MVC\TEST\Repository\SessionRepository;
 use PRGANYAR\MVC\TEST\Repository\UserRepository;
 use PRGANYAR\MVC\TEST\Service\SessionService;
-
-function setcookie(string $name, string $value){
-    echo "$name: $value";
-}
 
 class SessionServiceTest extends TestCase
 {
@@ -45,7 +43,7 @@ class SessionServiceTest extends TestCase
 
         $result = $this->sessionRepository->findById('prganyrn');
 
-        self::assertEquals('eko', $result->user_id);
+        self::assertEquals('prganyrn', $result->user_id);
     }
 
     public function testDestroy()

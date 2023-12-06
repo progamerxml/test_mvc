@@ -9,6 +9,7 @@ use PRGANYAR\MVC\TEST\App\View;
 use PRGANYAR\MVC\TEST\Config\Database;
 use PRGANYAR\MVC\TEST\Exception\ValidationException;
 use PRGANYAR\MVC\TEST\Model\UserLoginRequest;
+use PRGANYAR\MVC\TEST\Model\UserPasswordUpdateRequest;
 use PRGANYAR\MVC\TEST\Model\UserProfileUpdateRequest;
 use PRGANYAR\MVC\TEST\Model\UserRegisterRequest;
 use PRGANYAR\MVC\TEST\Repository\UserRepository;
@@ -124,6 +125,39 @@ class UserController
                 ]
             ]);
         }
+    }
 
+    public function updatePassword()
+    {
+        $user = $this->sessionService->current();
+
+        View::view('User/password', [
+            "title" => "Update user password",
+            "user" => [
+                "id" => $user->id
+            ]
+        ]);
+    }
+
+    public function postUpdatePassword()
+    {
+        $user = $this->sessionService->current();
+        $request = new UserPasswordUpdateRequest();
+        $request->id = $user->id;
+        $request->oldPassword = $_POST['oldPassword'];
+        $request->newPassword = $_POST['newPassword'];
+
+        try{
+            $this->userService->updatePassword($request);
+            View::redirect('/');
+        }catch(\Exception $err){
+            View::view('User/password', [
+                "title" => "Update user password",
+                "error" => $err->getMessage(),
+                "user" => [
+                    "id" => $user->id
+                ]
+            ]);
+        }
     }
 }

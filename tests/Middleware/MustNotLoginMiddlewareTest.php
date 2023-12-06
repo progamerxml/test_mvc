@@ -1,6 +1,9 @@
 <?php
 
 namespace PRGANYAR\MVC\TEST\Middleware;
+
+require_once __DIR__ ."/../Helper/helper.php";
+
 use PHPUnit\Framework\TestCase;
 use PRGANYAR\MVC\TEST\Config\Database;
 use PRGANYAR\MVC\TEST\Domain\Session;
